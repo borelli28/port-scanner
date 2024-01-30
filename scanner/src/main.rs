@@ -1,6 +1,12 @@
 use std::env;
 use std::net::IpAddr;
 
+
+struct ScanArgs {
+    ip: IpAddr,
+    port: u16
+}
+
 fn interface() {
     let args: Vec<String> = env::args().collect();
 
@@ -14,6 +20,8 @@ fn interface() {
 
     let port_arg_index = args.iter().position(|arg| arg == "-port").expect("Missing -port argument");
     let port: u16 = args[port_arg_index + 1].parse().expect("Invalid port number");
+
+    ScanArgs {ip, port};
 
     println!("Scanning Port: {} of IP: {}", port, ip);
 }
