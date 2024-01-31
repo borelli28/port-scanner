@@ -1,6 +1,7 @@
 use std::env;
 use std::net::{IpAddr};
 
+
 struct ScanArgs {
     ip: IpAddr,
     ports: Vec<u16>,
