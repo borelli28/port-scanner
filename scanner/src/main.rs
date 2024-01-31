@@ -31,13 +31,18 @@ fn interface() {
 }
 
 fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
-    let parts: Vec<&str> = range.split('-').collect();
-    if parts.len() != 2 {
-        return Err("Invalid port range format. Please use <START_PORT>-<END_PORT>".into());
+    if range.contains('-') {
+        let parts: Vec<&str> = range.split('-').collect();
+        if parts.len() != 2 {
+            return Err("Invalid port range format. Please use <START_PORT>-<END_PORT>".into());
+        }
+        let start: u16 = parts[0].parse()?;
+        let end: u16 = parts[1].parse()?;
+        Ok((start..=end).collect())
+    } else {
+        let port: u16 = range.parse()?;
+        Ok(vec![port])
     }
-    let start: u16 = parts[0].parse()?;
-    let end: u16 = parts[1].parse()?;
-    Ok((start..=end).collect())
 }
 
 fn main() {
