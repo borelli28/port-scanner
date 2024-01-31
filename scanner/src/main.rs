@@ -4,7 +4,7 @@ use std::net::IpAddr;
 
 struct ScanArgs {
     ip: IpAddr,
-    port: u16
+    ports: Vec<u16>,
 }
 
 fn interface() {
