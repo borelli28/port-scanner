@@ -29,7 +29,6 @@ fn interface() {
         ports,
     };
 
-    // println!("Scanning Ports: {:?} of IP: {}", scan_args.ports, scan_args.ip);
     scanner(scan_args.ip, &scan_args.ports);
 }
 
@@ -50,7 +49,6 @@ fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>>
 
 fn scanner(ip: IpAddr, ports: &[u16]) {
     for &port in ports {
-        println!("Scanning port {} of host: {}", port, ip);
         let socket = SocketAddr::new(ip, port);
         match TcpStream::connect_timeout(&socket, Duration::from_secs(5)) {
             Ok(_) => println!("Port {} is open", port),
