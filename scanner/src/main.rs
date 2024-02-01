@@ -1,5 +1,6 @@
 use std::env;
-use std::net::{IpAddr};
+use std::net::{IpAddr, TcpStream, SocketAddr};
+use std::time::Duration;
 
 
 struct ScanArgs {
@@ -28,7 +29,7 @@ fn interface() {
         ports,
     };
 
-    println!("Scanning Ports: {:?} of IP: {}", scan_args.ports, scan_args.ip);
+    scanner(scan_args.ip, &scan_args.ports);
 }
 
 fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
@@ -43,6 +44,22 @@ fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>>
     } else {
         let port: u16 = range.parse()?;
         Ok(vec![port])
+    }
+}
+
+fn scanner(ip: IpAddr, ports: &[u16]) {
+    for &port in ports {
+        let socket = SocketAddr::new(ip, port);
+        match TcpStream::connect_timeout(&socket, Duration::from_secs(5)) {
+            Ok(_) => println!("Port {} is open", port),
+            Err(err) => {
+                if err.kind() == std::io::ErrorKind::ConnectionRefused {
+                    println!("Port {} is closed", port);
+                } else {
+                    println!("Port {} is filtered", port);
+                }
+            }
+        }
     }
 }
 
