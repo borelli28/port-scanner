@@ -1,5 +1,6 @@
 use std::env;
 use std::net::{IpAddr, TcpStream};
+use std::time::Duration;
 
 
 struct ScanArgs {
