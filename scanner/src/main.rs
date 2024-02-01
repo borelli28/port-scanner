@@ -28,7 +28,8 @@ fn interface() {
         ports,
     };
 
-    println!("Scanning Ports: {:?} of IP: {}", scan_args.ports, scan_args.ip);
+    // println!("Scanning Ports: {:?} of IP: {}", scan_args.ports, scan_args.ip);
+    scanner(scan_args.ip, &scan_args.ports);
 }
 
 fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
@@ -43,6 +44,12 @@ fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>>
     } else {
         let port: u16 = range.parse()?;
         Ok(vec![port])
+    }
+}
+
+fn scanner(ip: IpAddr, ports: &[u16]) {
+    for &port in ports {
+        println!("Scanning port {} of host: {}", port, ip);
     }
 }
 
