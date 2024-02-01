@@ -54,7 +54,13 @@ fn scanner(ip: IpAddr, ports: &[u16]) {
         let socket = SocketAddr::new(ip, port);
         match TcpStream::connect_timeout(&socket, Duration::from_secs(5)) {
             Ok(_) => println!("Port {} is open", port),
-            Err(_) => println!("Port {} is closed or filtered", port),
+            Err(err) => {
+                if err.kind() == std::io::ErrorKind::ConnectionRefused {
+                    println!("Port {} is closed", port);
+                } else {
+                    println!("Port {} is filtered", port);
+                }
+            }
         }
     }
 }
