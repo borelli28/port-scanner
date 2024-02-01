@@ -50,6 +50,10 @@ fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>>
 fn scanner(ip: IpAddr, ports: &[u16]) {
     for &port in ports {
         println!("Scanning port {} of host: {}", port, ip);
+        match TcpStream::connect((ip, port)) {
+            Ok(_) => println!("Port {} is open", port),
+            Err(_) => println!("Port {} is closed or filtered", port),
+        }
     }
 }
 
