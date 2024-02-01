@@ -1,5 +1,5 @@
 use std::env;
-use std::net::{IpAddr};
+use std::net::{IpAddr, TcpStream};
 
 
 struct ScanArgs {
