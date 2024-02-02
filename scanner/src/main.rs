@@ -48,19 +48,27 @@ fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>>
 }
 
 fn scanner(ip: IpAddr, ports: &[u16]) {
+    let mut open_ports = Vec::new();
+    let mut closed_ports = Vec::new();
+    let mut filtered_ports = Vec::new();
+
     for &port in ports {
         let socket = SocketAddr::new(ip, port);
-        match TcpStream::connect_timeout(&socket, Duration::from_secs(5)) {
-            Ok(_) => println!("Port {} is open", port),
+        match TcpStream::connect_timeout(&socket, Duration::from_secs(3)) {
+            Ok(_) => open_ports.push(port),
             Err(err) => {
                 if err.kind() == std::io::ErrorKind::ConnectionRefused {
-                    println!("Port {} is closed", port);
+                    closed_ports.push(port);
                 } else {
-                    println!("Port {} is filtered", port);
+                    filtered_ports.push(port);
                 }
             }
         }
     }
+
+    println!("Open ports: {}", open_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
+    println!("Closed ports: {}", closed_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
+    println!("Filtered ports: {}", filtered_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
 }
 
 fn main() {
