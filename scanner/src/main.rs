@@ -1,9 +1,10 @@
 use std::env;
 use std::net::{IpAddr, TcpStream, SocketAddr};
 use std::time::Duration;
+use iced::widget::{button, column, text, Column};
 
 
-struct ScanArgs {
+struct ScanArgs {   // State
     ip: IpAddr,
     ports: Vec<u16>,
 }
@@ -71,6 +72,27 @@ fn scanner(ip: IpAddr, ports: &[u16]) {
     println!("Filtered ports: {}", filtered_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
 }
 
+#[derive(Debug, Clone, Copy)]
+pub enum Message {  // Messages
+    ScanPressed,
+}
+
+impl ScanArgs {  // View Logic
+    pub fn view(&self) -> Column<Message> {
+        column![    // We use a column: a simple vertical layout
+            button("Scan").on_press(Message::ScanPressed),
+            text(self.ip).size(50),
+        ] 
+    }
+    
+    pub fn update(&mut self, message: Message) {
+        match message {
+            Message::ScanPressed => {
+                interface();
+            }
+        }
+    }
+}
+
 fn main() {
-    interface();
 }
