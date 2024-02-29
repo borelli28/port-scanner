@@ -2,6 +2,8 @@ use std::env;
 use std::net::{IpAddr, TcpStream, SocketAddr};
 use std::time::Duration;
 use iced::widget::{button, column, text, Column};
+use iced::executor;
+use iced::{Application, Command, Element, Settings, Theme};
 
 
 struct ScanArgs {   // State
@@ -77,22 +79,47 @@ pub enum Message {  // Messages
     ScanPressed,
 }
 
-impl ScanArgs {  // View Logic
-    pub fn view(&self) -> Column<Message> {
-        column![    // We use a column: a simple vertical layout
-            button("Scan").on_press(Message::ScanPressed),
-            text(self.ip).size(50),
-        ] 
-    }
+// impl ScanArgs {  // View Logic
+//     pub fn view(&self) -> Column<Message> {
+//         column![    // We use a column: a simple vertical layout
+//             button("Scan").on_press(Message::ScanPressed),
+//             text(self.ip).size(50),
+//         ] 
+//     }
     
-    pub fn update(&mut self, message: Message) {
-        match message {
-            Message::ScanPressed => {
-                interface();
-            }
-        }
+//     pub fn update(&mut self, message: Message) {
+//         match message {
+//             Message::ScanPressed => {
+//                 interface();
+//             }
+//         }
+//     }
+// }
+
+impl Application for ScanArgs {
+    type Executor = executor::Default;
+    type Flags = ();
+    type Message = ();
+    type Theme = Theme;
+
+    fn new(_flags: ()) -> (ScanArgs, Command<Self::Message>) {
+        (ScanArgs, Command::none())
+    }
+
+    fn title(&self) -> String {
+        String::from("Simple Port Scanner")
+    }
+
+    fn update(&mut self, _message: Self::Message) -> Command<Self::Message> {
+        Command::none()
+    }
+
+    fn view(&self) -> Element<Self::Message> {
+        button("Scan").on_press(Message::ScanPressed);
+        self.ip.into()
     }
 }
 
-fn main() {
+pub fn main() -> iced::Result {
+    ScanArgs::run(Settings::default())
 }
