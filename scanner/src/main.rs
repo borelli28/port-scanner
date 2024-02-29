@@ -8,6 +8,9 @@ use iced::widget::{Column, button, text};
 struct ScanArgs {   // State
     ip: IpAddr,
     ports: Vec<u16>,
+    open_ports: Vec<u16>,
+    closed_ports: Vec<u16>,
+    filtered_ports: Vec<u16>,
 }
 
 // fn interface() {
@@ -68,8 +71,7 @@ fn scanner(ip: IpAddr, ports: &[u16]) -> (Vec<u16>, Vec<u16>, Vec<u16>) {
         }
     }
 
-    return (open_ports, closed_ports, filtered_ports)
-    
+    return (open_ports, closed_ports, filtered_ports) 
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -122,6 +124,9 @@ impl Application for ScanArgs {
         let scan_args = ScanArgs {
             ip,
             ports,
+            open_ports: Vec::new(),
+            closed_ports: Vec::new(),
+            filtered_ports: Vec::new(),
         };
 
         (scan_args, Command::none())
@@ -135,12 +140,10 @@ impl Application for ScanArgs {
         match message {
             Message::ScanPressed => {
                 let (open_ports, closed_ports, filtered_ports) = scanner(self.ip, &self.ports);
-    
-                println!("Open ports: {:?}", open_ports);
-                println!("Closed ports: {:?}", closed_ports);
-                println!("Filtered ports: {:?}", filtered_ports);
-
-                // TODO: Display values in GUI app
+                
+                self.open_ports = open_ports;
+                self.closed_ports = closed_ports;
+                self.filtered_ports = filtered_ports;
             }
         }
         Command::none()
@@ -149,9 +152,16 @@ impl Application for ScanArgs {
     fn view(&self) -> Element<Message> {
         Column::new()
             .push(button("Scan").on_press(Message::ScanPressed))
-            .push(text("IP and Ports:"))
+            .push(text("IP and Ports to be scanned:"))
             .push(text(self.ip))
             .push(text(&self.ports[0]))
+
+            .push(text("\n Open Ports:"))
+            .push(text(self.open_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", ")))
+            .push(text("\n Closed Ports:"))
+            .push(text(self.closed_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", ")))
+            .push(text("\n Filtered Ports:"))
+            .push(text(self.filtered_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", ")))
             .into()
     }
 }
