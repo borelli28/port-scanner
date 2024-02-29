@@ -13,30 +13,6 @@ struct ScanArgs {   // State
     filtered_ports: Vec<u16>,
 }
 
-// fn interface() {
-//     let args: Vec<String> = env::args().collect();
-
-//     if args.len() < 5 {
-//         eprintln!("Not enough arguments provided. Usage: scanner -ip <IP_ADDRESS> -port <PORT_RANGE>");
-//         std::process::exit(1);
-//     }
-
-//     let ip_arg_index = args.iter().position(|arg| arg == "-ip").expect("Missing -ip argument");
-//     let ip_str = &args[ip_arg_index + 1];
-//     let ip: IpAddr = ip_str.parse().expect("Invalid IP address");
-
-//     let port_arg_index = args.iter().position(|arg| arg == "-port").expect("Missing -port argument");
-//     let port_range_str = &args[port_arg_index + 1];
-//     let ports: Vec<u16> = parse_port_range(port_range_str).expect("Invalid port range");
-
-//     let scan_args = ScanArgs {
-//         ip,
-//         ports,
-//     };
-
-//     scanner(scan_args.ip, &scan_args.ports);
-// }
-
 fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
     if range.contains('-') {
         let parts: Vec<&str> = range.split('-').collect();
@@ -78,23 +54,6 @@ fn scanner(ip: IpAddr, ports: &[u16]) -> (Vec<u16>, Vec<u16>, Vec<u16>) {
 pub enum Message {  // Messages
     ScanPressed,
 }
-
-// impl ScanArgs {  // View Logic
-//     pub fn view(&self) -> Column<Message> {
-//         column![    // We use a column: a simple vertical layout
-//             button("Scan").on_press(Message::ScanPressed),
-//             text(self.ip).size(50),
-//         ] 
-//     }
-    
-//     pub fn update(&mut self, message: Message) {
-//         match message {
-//             Message::ScanPressed => {
-//                 interface();
-//             }
-//         }
-//     }
-// }
 
 impl Application for ScanArgs {
     type Executor = iced::executor::Default;
