@@ -124,8 +124,7 @@ impl Application for ScanArgs {
             ip,
             ports,
         };
-    
-        scanner(scan_args.ip, &scan_args.ports);
+
         (scan_args, Command::none())
     }
 
@@ -136,7 +135,8 @@ impl Application for ScanArgs {
     fn update(&mut self, message: Message) -> Command<Message> {
         match message {
             Message::ScanPressed => {
-                println!("I don't know");
+                println!("Button clicked! \n");
+                scanner(self.ip, &self.ports);
             }
         }
         Command::none()
