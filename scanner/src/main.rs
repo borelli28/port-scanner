@@ -71,12 +71,11 @@ fn scanner(ip: IpAddr, ports: &[u16]) -> (Vec<u16>, Vec<u16>, Vec<u16>) {
     println!("Open ports: {}", open_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
     println!("Closed ports: {}", closed_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
     println!("Filtered ports: {}", filtered_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
-    
-    // Return an object with all three variables
+
     let open_ports = Vec::new();
     let closed_ports = Vec::new();
     let filtered_ports = Vec::new();
-     return (open_ports, closed_ports, filtered_ports)
+    return (open_ports, closed_ports, filtered_ports)
     
 }
 
