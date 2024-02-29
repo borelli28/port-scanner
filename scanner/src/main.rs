@@ -1,9 +1,8 @@
 use std::env;
 use std::net::{IpAddr, TcpStream, SocketAddr};
 use std::time::Duration;
-use iced::widget::{button, column, text, Column};
-use iced::executor;
-use iced::{Application, Command, Element, Settings, Theme};
+use iced::{Element, Application, Command, Settings, Theme};
+use iced::widget::{Column, button, text};
 
 
 struct ScanArgs {   // State
@@ -11,29 +10,29 @@ struct ScanArgs {   // State
     ports: Vec<u16>,
 }
 
-fn interface() {
-    let args: Vec<String> = env::args().collect();
+// fn interface() {
+//     let args: Vec<String> = env::args().collect();
 
-    if args.len() < 5 {
-        eprintln!("Not enough arguments provided. Usage: scanner -ip <IP_ADDRESS> -port <PORT_RANGE>");
-        std::process::exit(1);
-    }
+//     if args.len() < 5 {
+//         eprintln!("Not enough arguments provided. Usage: scanner -ip <IP_ADDRESS> -port <PORT_RANGE>");
+//         std::process::exit(1);
+//     }
 
-    let ip_arg_index = args.iter().position(|arg| arg == "-ip").expect("Missing -ip argument");
-    let ip_str = &args[ip_arg_index + 1];
-    let ip: IpAddr = ip_str.parse().expect("Invalid IP address");
+//     let ip_arg_index = args.iter().position(|arg| arg == "-ip").expect("Missing -ip argument");
+//     let ip_str = &args[ip_arg_index + 1];
+//     let ip: IpAddr = ip_str.parse().expect("Invalid IP address");
 
-    let port_arg_index = args.iter().position(|arg| arg == "-port").expect("Missing -port argument");
-    let port_range_str = &args[port_arg_index + 1];
-    let ports: Vec<u16> = parse_port_range(port_range_str).expect("Invalid port range");
+//     let port_arg_index = args.iter().position(|arg| arg == "-port").expect("Missing -port argument");
+//     let port_range_str = &args[port_arg_index + 1];
+//     let ports: Vec<u16> = parse_port_range(port_range_str).expect("Invalid port range");
 
-    let scan_args = ScanArgs {
-        ip,
-        ports,
-    };
+//     let scan_args = ScanArgs {
+//         ip,
+//         ports,
+//     };
 
-    scanner(scan_args.ip, &scan_args.ports);
-}
+//     scanner(scan_args.ip, &scan_args.ports);
+// }
 
 fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
     if range.contains('-') {
@@ -97,28 +96,60 @@ pub enum Message {  // Messages
 // }
 
 impl Application for ScanArgs {
-    type Executor = executor::Default;
+    type Executor = iced::executor::Default;
     type Flags = ();
-    type Message = ();
+    type Message = Message;
     type Theme = Theme;
+    fn theme(&self) -> Self::Theme {
+        Theme::Dark
+    }
 
-    fn new(_flags: ()) -> (ScanArgs, Command<Self::Message>) {
-        (ScanArgs, Command::none())
+    fn new(_flags: ()) -> (ScanArgs, Command<Message>) {
+        let args: Vec<String> = env::args().collect();
+    
+        if args.len() < 5 {
+            eprintln!("Not enough arguments provided. Usage: scanner -ip <IP_ADDRESS> -port <PORT_RANGE>");
+            std::process::exit(1);
+        }
+    
+        let ip_arg_index = args.iter().position(|arg| arg == "-ip").expect("Missing -ip argument");
+        let ip_str = &args[ip_arg_index + 1];
+        let ip: IpAddr = ip_str.parse().expect("Invalid IP address");
+    
+        let port_arg_index = args.iter().position(|arg| arg == "-port").expect("Missing -port argument");
+        let port_range_str = &args[port_arg_index + 1];
+        let ports: Vec<u16> = parse_port_range(port_range_str).expect("Invalid port range");
+    
+        let scan_args = ScanArgs {
+            ip,
+            ports,
+        };
+    
+        scanner(scan_args.ip, &scan_args.ports);
+        (scan_args, Command::none())
     }
 
     fn title(&self) -> String {
         String::from("Simple Port Scanner")
     }
 
-    fn update(&mut self, _message: Self::Message) -> Command<Self::Message> {
+    fn update(&mut self, message: Message) -> Command<Message> {
+        match message {
+            Message::ScanPressed => {
+                println!("I don't know");
+            }
+        }
         Command::none()
     }
 
-    fn view(&self) -> Element<Self::Message> {
-        button("Scan").on_press(Message::ScanPressed);
-        self.ip.into()
+    fn view(&self) -> Element<Message> {
+        Column::new()
+            .push(button("Scan").on_press(Message::ScanPressed))
+            .push(text("Display IP and Port information here")) // Modify this to display relevant information
+            .into()
     }
 }
+
 
 pub fn main() -> iced::Result {
     ScanArgs::run(Settings::default())
