@@ -49,7 +49,7 @@ fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>>
     }
 }
 
-fn scanner(ip: IpAddr, ports: &[u16]) {
+fn scanner(ip: IpAddr, ports: &[u16]) -> (Vec<u16>, Vec<u16>, Vec<u16>) {
     let mut open_ports = Vec::new();
     let mut closed_ports = Vec::new();
     let mut filtered_ports = Vec::new();
@@ -71,6 +71,13 @@ fn scanner(ip: IpAddr, ports: &[u16]) {
     println!("Open ports: {}", open_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
     println!("Closed ports: {}", closed_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
     println!("Filtered ports: {}", filtered_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
+    
+    // Return an object with all three variables
+    let open_ports = Vec::new();
+    let closed_ports = Vec::new();
+    let filtered_ports = Vec::new();
+     return (open_ports, closed_ports, filtered_ports)
+    
 }
 
 #[derive(Debug, Clone, Copy)]
