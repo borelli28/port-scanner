@@ -149,7 +149,9 @@ impl Application for ScanArgs {
     fn view(&self) -> Element<Message> {
         Column::new()
             .push(button("Scan").on_press(Message::ScanPressed))
-            .push(text("Display IP and Port information here")) // Modify this to display relevant information
+            .push(text("IP and Ports:"))
+            .push(text(self.ip))
+            .push(text(&self.ports[0]))
             .into()
     }
 }
