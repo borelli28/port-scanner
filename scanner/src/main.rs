@@ -1,6 +1,8 @@
 use std::env;
 use std::net::{IpAddr, TcpStream, SocketAddr};
 use std::time::Duration;
+use gtk::prelude::*;
+use gtk::{glib, Application, ApplicationWindow};
 
 
 struct ScanArgs {   // State
@@ -44,11 +46,22 @@ fn scanner(ip: IpAddr, ports: &[u16]) -> (Vec<u16>, Vec<u16>, Vec<u16>) {
             }
         }
     }
-
     return (open_ports, closed_ports, filtered_ports) 
 }
 
+const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 
-pub fn main() {
-    println!("Hello");
+fn build_ui(app: &Application) {
+    let window = ApplicationWindow::builder()
+        .application(app)
+        .title("My GTK App")
+        .build();
+
+    window.present();
+}
+
+fn main() -> glib::ExitCode {
+    let app = Application::builder().application_id(APP_ID).build();
+    app.connect_activate(build_ui);
+    app.run()
 }
