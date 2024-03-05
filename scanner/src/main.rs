@@ -52,21 +52,15 @@ const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 
 fn build_ui(app: &Application) {
     let ip = Label::builder()
-        .label("IP")
-        // .margin_top(12)
-        // .margin_bottom(12)
-        // .margin_start(12)
-        // .margin_end(12)
+        .label("")
+        .margin_top(25)
         .build();
     let button = Button::builder()
         .label("Submit")
-        // .margin_top(40)
-        // .margin_bottom(40)
-        // .margin_start(40)
-        // .margin_end(40)
+        .margin_top(100)
         .build();
 
-    button.connect_clicked(move |ip| {
+    button.connect_clicked(|ip| {
         ip.set_label("Hello World!");
     });
 
@@ -75,7 +69,6 @@ fn build_ui(app: &Application) {
         .title("Port Scanner")
         .default_width(625)
         .default_height(550)
-        .child(&ip)
         .child(&button)
         .build();
 
