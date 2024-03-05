@@ -1,8 +1,7 @@
 use std::env;
 use std::net::{IpAddr, TcpStream, SocketAddr};
 use std::time::Duration;
-use gtk::prelude::*;
-use gtk::{glib, Application, ApplicationWindow};
+use gtk::{prelude::*,glib, Label, Application, ApplicationWindow, Button};
 
 
 struct ScanArgs {   // State
@@ -52,9 +51,32 @@ fn scanner(ip: IpAddr, ports: &[u16]) -> (Vec<u16>, Vec<u16>, Vec<u16>) {
 const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 
 fn build_ui(app: &Application) {
+    let ip = Label::builder()
+        .label("IP")
+        // .margin_top(12)
+        // .margin_bottom(12)
+        // .margin_start(12)
+        // .margin_end(12)
+        .build();
+    let button = Button::builder()
+        .label("Submit")
+        // .margin_top(40)
+        // .margin_bottom(40)
+        // .margin_start(40)
+        // .margin_end(40)
+        .build();
+
+    button.connect_clicked(move |ip| {
+        ip.set_label("Hello World!");
+    });
+
     let window = ApplicationWindow::builder()
         .application(app)
-        .title("My GTK App")
+        .title("Port Scanner")
+        .default_width(625)
+        .default_height(550)
+        .child(&ip)
+        .child(&button)
         .build();
 
     window.present();
