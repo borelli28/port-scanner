@@ -1,15 +1,35 @@
 use std::env;
 use std::net::{IpAddr, TcpStream, SocketAddr};
 use std::time::Duration;
-use gtk::{prelude::*,glib, Label, Application, ApplicationWindow, Button};
 
 
-struct ScanArgs {   // State
+struct ScanArgs {
     ip: IpAddr,
     ports: Vec<u16>,
-    open_ports: Vec<u16>,
-    closed_ports: Vec<u16>,
-    filtered_ports: Vec<u16>,
+}
+
+fn interface() {
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() < 5 {
+        eprintln!("Not enough arguments provided. Usage: scanner -ip <IP_ADDRESS> -port <PORT_RANGE>");
+        std::process::exit(1);
+    }
+
+    let ip_arg_index = args.iter().position(|arg| arg == "-ip").expect("Missing -ip argument");
+    let ip_str = &args[ip_arg_index + 1];
+    let ip: IpAddr = ip_str.parse().expect("Invalid IP address");
+
+    let port_arg_index = args.iter().position(|arg| arg == "-port").expect("Missing -port argument");
+    let port_range_str = &args[port_arg_index + 1];
+    let ports: Vec<u16> = parse_port_range(port_range_str).expect("Invalid port range");
+
+    let scan_args = ScanArgs {
+        ip,
+        ports,
+    };
+
+    scanner(scan_args.ip, &scan_args.ports);
 }
 
 fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>> {
@@ -27,7 +47,7 @@ fn parse_port_range(range: &str) -> Result<Vec<u16>, Box<dyn std::error::Error>>
     }
 }
 
-fn scanner(ip: IpAddr, ports: &[u16]) -> (Vec<u16>, Vec<u16>, Vec<u16>) {
+fn scanner(ip: IpAddr, ports: &[u16]) {
     let mut open_ports = Vec::new();
     let mut closed_ports = Vec::new();
     let mut filtered_ports = Vec::new();
@@ -45,38 +65,12 @@ fn scanner(ip: IpAddr, ports: &[u16]) -> (Vec<u16>, Vec<u16>, Vec<u16>) {
             }
         }
     }
-    return (open_ports, closed_ports, filtered_ports) 
+
+    println!("Open ports: {}", open_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
+    println!("Closed ports: {}", closed_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
+    println!("Filtered ports: {}", filtered_ports.iter().map(|&port| port.to_string()).collect::<Vec<String>>().join(", "));
 }
 
-const APP_ID: &str = "org.gtk_rs.HelloWorld2";
-
-fn build_ui(app: &Application) {
-    let ip = Label::builder()
-        .label("")
-        .margin_top(25)
-        .build();
-    let button = Button::builder()
-        .label("Submit")
-        .margin_top(100)
-        .build();
-
-    button.connect_clicked(|ip| {
-        ip.set_label("Hello World!");
-    });
-
-    let window = ApplicationWindow::builder()
-        .application(app)
-        .title("Port Scanner")
-        .default_width(625)
-        .default_height(550)
-        .child(&button)
-        .build();
-
-    window.present();
-}
-
-fn main() -> glib::ExitCode {
-    let app = Application::builder().application_id(APP_ID).build();
-    app.connect_activate(build_ui);
-    app.run()
+fn main() {
+    interface();
 }
