@@ -1,4 +1,4 @@
 # port-scanner
 
 ### Usage
-scanner -ip 10.0.0.0 -port 123
+./scanner -ip 127.0.0.1 -port 8000
