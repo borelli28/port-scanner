@@ -1,7 +1,7 @@
 
 section .data
-	ip_input db "IP address: "
-	port_input db "Port: "
+	ip_text db "IP address: "
+	port_text db "Port: "
 
 section .bss
 	ip resb 16
