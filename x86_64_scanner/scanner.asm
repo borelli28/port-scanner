@@ -3,6 +3,9 @@ section .data
 	ip_input db "IP address: "
 	port_input db "Port: "
 
+section .bss
+	ip resb 16
+
 section .text
 	global _start
 
